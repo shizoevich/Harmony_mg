@@ -12,7 +12,10 @@ class iotController {
         const iot = await db.query('SELECT * FROM iot WHERE id_iot = $1', [id]);
         res.json(iot.rows);
     }
-
+    
+    async test(req, res) {
+        res.json({"status":true})
+    }
     async updateIot(req, res) {
         const id = req.params.id;
         const { id_owner } = req.body;
