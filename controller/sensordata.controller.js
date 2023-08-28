@@ -2,9 +2,9 @@ const db = require('../db');
 
 class sensorDataController {
     async createSensorData(req, res) {
-        const { date, humidity, temperature, noise, illumination, id_iot } = req.body;
-        const newSensorData = await db.query('INSERT INTO sensor_data (date, humidity, temperature, noise, illumination, id_iot) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', 
-        [date, humidity, temperature, noise, illumination, id_iot]);
+        const { humidity, temperature, noise, illumination, id_iot } = req.body;
+        const newSensorData = await db.query('INSERT INTO sensor_data (humidity, temperature, noise, illumination, id_iot) VALUES ($1, $2, $3, $4, $5) RETURNING *', 
+        [humidity, temperature, noise, illumination, id_iot]);
         res.json(newSensorData.rows[0]);
     }
     
