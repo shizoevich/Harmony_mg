@@ -4,18 +4,26 @@ const bcrypt = require('bcryptjs');
 class ownerController {
     
   async createOwner(req, res) {
-    const { name_owner, mail_owner, password_owner, availability_iot, role } = req.body;
-    
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password_owner, salt);
+    try {
+      const { name_owner, mail_owner, password_owner, availability_iot, role } = req.body;
   
-    const newOwner = await db.query(
-      'INSERT INTO owner (name_owner, mail_owner, password_owner, availability_iot, role) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [name_owner, mail_owner, hashedPassword, availability_iot, role]
-    );
-    
-    res.json(newOwner.rows[0]);
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password_owner, salt);
+  
+      const newOwner = await db.query(
+        'INSERT INTO owner (name_owner, mail_owner, password_owner, availability_iot, role) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+        [name_owner, mail_owner, hashedPassword, availability_iot, role]
+      );
+  
+      // Send a response indicating successful owner creation
+      res.status(201).json(newOwner.rows[0]);
+    } catch (error) {
+      // Log the error and send an error response
+      console.error('Error creating owner:', error);
+      res.status(500).json({ error: 'An error occurred while creating the owner.' });
+    }
   }
+  
 
   async getOwner(req, res) {
     const id = req.params.id;

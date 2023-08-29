@@ -9,7 +9,7 @@ const keys = require('../config/keys');
 const { checkRole } = require('../middleware');
 const db = require('../db');
 
-router.post('/owner', passport.authenticate('jwt', { session: false }), ownerController.createOwner);
+router.post('/owner',  ownerController.createOwner);
 router.get('/owner/:id', passport.authenticate('jwt', { session: false }), ownerController.getOwner);
 router.put('/owner/:id', passport.authenticate('jwt', { session: false }), ownerController.updateOwner);
 router.get('/owners', passport.authenticate('jwt', { session: false }), checkRole('owner'), ownerController.getOwners);
