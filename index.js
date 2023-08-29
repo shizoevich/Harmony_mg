@@ -1,6 +1,6 @@
 const express = require('express')
 const passport = require('passport');
-
+const cors = require('cors')
 const workerRouter = require('./routes/worker.routes');
 const ownerRouter = require('./routes/owner.routes');
 const iotRouter = require('./routes/iot.routes');
@@ -12,11 +12,7 @@ const app = express()
 app.use(express.json())
 require('./config/passport')(passport);
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+app.use(cors())
 app.use(passport.initialize());
 app.use('/api', sensordataRouter)
 app.use('/api', ownerRouter)
