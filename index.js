@@ -12,7 +12,7 @@ const app = express()
 app.use(express.json())
 require('./config/passport')(passport);
 
-app.use(cors())
+app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(passport.initialize());
 app.use('/api', sensordataRouter)
 app.use('/api', ownerRouter)
