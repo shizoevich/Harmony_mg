@@ -17,9 +17,9 @@ class sensorDataController {
 
     async updateSensorData(req, res) {
         const id = req.params.id;
-        const { record_date, record_time, humidity, temperature, noise, illumination, id_iot, id_worker} = req.body;
-        const updatedSensorData = await db.query('UPDATE sensor_data SET record_date = $1, record_time = $2, humidity = $3, temperature = $4, noise = $5, illumination = $6, id_iot = $7, id_worker = $8 WHERE id_sensor = $9 RETURNING *', 
-        [record_date, record_time, humidity, temperature, noise, illumination, id_iot, id_worker, id]);
+        const { record_date, record_time, humidity, temperature, noise, illumination, id_iot} = req.body;
+        const updatedSensorData = await db.query('UPDATE sensor_data SET record_date = $1, record_time = $2, humidity = $3, temperature = $4, noise = $5, illumination = $6, id_iot = $7 WHERE id_sensor = $8 RETURNING *', 
+        [record_date, record_time, humidity, temperature, noise, illumination, id_iot, id]);
         res.json(updatedSensorData.rows[0]);
     }
 
