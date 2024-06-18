@@ -13,7 +13,9 @@ const app = express();
 app.use(express.json());
 require('./config/passport')(passport);
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors({ origin: '*' })); // Разрешаем все источники временно
+
+app.use(cors({ origin: '*' }));
+
 app.use(passport.initialize());
 app.use('/api', sensordataRouter);
 app.use('/api', ownerRouter);
@@ -23,4 +25,5 @@ app.use('/api', workerdataRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+
 });
