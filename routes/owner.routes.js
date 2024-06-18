@@ -8,6 +8,26 @@ const passport = require('passport');
 const ownerController = require('../controller/owner.controller');
 const { checkRole } = require('../middleware');
 
+router.post('/register', async (req, res) => {
+  const { name_owner, mail_owner, password_owner } = req.body;
+
+  try {
+    // Хешируем пароль перед сохранением
+    const hashedPassword = await bcrypt.hash(password_owner, 10);
+
+    // Создаем пользователя с ролью 'owner'
+    const newOwner = await db.query(
+      'INSERT INTO owner (name_owner, mail_owner, password_owner, role) VALUES ($1, $2, $3, $4) RETURNING *',
+      [name_owner, mail_owner, hashedPassword, 'owner']
+    );
+
+    res.json({ message: 'Registration successful', owner: newOwner.rows[0] });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 router.post('/login', async (req, res) => {
   const { mail_owner, password_owner } = req.body;
   console.log('Received mail_owner:', mail_owner);  // Логирование полученных данных
