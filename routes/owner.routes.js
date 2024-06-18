@@ -18,3 +18,4 @@ router.post('/owner/:id/suitable-workers', passport.authenticate('jwt', { sessio
 router.get('/owner/:id/workers-status', passport.authenticate('jwt', { session: false }), ownerController.getWorkersStatus);
 
 module.exports = router;
+

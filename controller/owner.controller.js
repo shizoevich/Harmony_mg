@@ -98,21 +98,10 @@ class ownerController {
     });
   }
 
-  async getOwner(req, res) {
-    const id = req.params.id;
-    const owner = await db.query('SELECT * FROM owner WHERE id_owner = $1', [id]);
-    res.json(owner.rows);
-  }
-
-  async updateOwner(req, res) {
-    const id = req.params.id;
-    const { name_owner, mail_owner, password_owner, availability_iot, role } = req.body;
-    const updatedOwner = await db.query(
-      'UPDATE owner SET name_owner = $1, mail_owner = $2, password_owner = $3, availability_iot = $4, role = $5 WHERE id_owner = $6 RETURNING *',
-      [name_owner, mail_owner, password_owner, availability_iot, role, id]
-    );
-    res.json(updatedOwner.rows[0]);
-  }
+  async getOwners(req, res) {
+    const owners = await db.query('SELECT * FROM owner');
+    res.json(owners.rows);
+    }
 
   async getOwner(req, res) {
     const id = req.params.id;
@@ -126,8 +115,17 @@ class ownerController {
         console.error('Error fetching owner:', error);
         res.status(500).json({ error: 'An error occurred while fetching the owner.' });
     }
-}
+  }
 
+  async updateOwner(req, res) {
+    const id = req.params.id;
+    const { name_owner, mail_owner, password_owner, availability_iot, role } = req.body;
+    const updatedOwner = await db.query(
+      'UPDATE owner SET name_owner = $1, mail_owner = $2, password_owner = $3, availability_iot = $4, role = $5 WHERE id_owner = $6 RETURNING *',
+      [name_owner, mail_owner, password_owner, availability_iot, role, id]
+    );
+    res.json(updatedOwner.rows[0]);
+  }
 
   async getOwnerSensorData(req, res) {
     const ownerId = req.params.id;
