@@ -10,12 +10,13 @@ const { checkRole } = require('../middleware');
 
 router.post('/login', async (req, res) => {
   const { mail_owner, password_owner } = req.body;
-  console.log('Received mail_owner:', mail_owner);
+  console.log('Received mail_owner:', mail_owner);  // Логирование полученных данных
   console.log('Received password_owner:', password_owner);
 
   try {
     const owner = await db.query('SELECT * FROM owner WHERE mail_owner = $1', [mail_owner]);
     if (!owner.rows.length) {
+      console.log('Owner not found');  // Логирование ошибки
       return res.status(404).json({ mail_owner: 'Owner not found' });
     }
 
@@ -39,6 +40,7 @@ router.post('/login', async (req, res) => {
         }
       );
     } else {
+      console.log('Password incorrect');  // Логирование ошибки
       return res.status(400).json({ password_owner: 'Password incorrect' });
     }
   } catch (error) {
