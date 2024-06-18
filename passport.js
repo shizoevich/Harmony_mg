@@ -7,14 +7,19 @@ const opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = keys.secretOrKey;
 
-module.exports = passport => {
+module.exports = (passport) => {
   passport.use(
-    new JwtStrategy(opts, async (jwt_payload, done) => {
-      const owner = await db.query('SELECT * FROM owner WHERE id_owner = $1', [jwt_payload.id_owner]);
-      if (owner.rows.length) {
-        return done(null, owner.rows[0]);
+    new Strategy(opts, async (jwt_payload, done) => {
+      try {
+        const owner = await db.query('SELECT * FROM owner WHERE id_owner = $1', [jwt_payload.id_owner]);
+        if (owner.rows.length > 0) {
+          return done(null, owner.rows[0]);
+        }
+        return done(null, false);
+      } catch (err) {
+        console.error(err);
+        return done(err, false);
       }
-      return done(null, false);
     })
   );
 };

@@ -7,7 +7,6 @@ const { checkRole } = require('../middleware');
 router.post('/register', ownerController.createOwner);
 router.post('/login', ownerController.loginOwner);
 router.get('/check-token', passport.authenticate('jwt', { session: false }), ownerController.checkToken);
-
 router.get('/owner/:id', passport.authenticate('jwt', { session: false }), ownerController.getOwner);
 router.put('/owner/:id', passport.authenticate('jwt', { session: false }), ownerController.updateOwner);
 router.get('/owners', passport.authenticate('jwt', { session: false }), checkRole('owner'), ownerController.getOwners);
@@ -19,3 +18,4 @@ router.post('/owner/:id/suitable-workers', passport.authenticate('jwt', { sessio
 router.get('/owner/:id/workers-status', passport.authenticate('jwt', { session: false }), ownerController.getWorkersStatus);
 
 module.exports = router;
+
