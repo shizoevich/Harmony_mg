@@ -70,6 +70,8 @@ router.post('/login', async (req, res) => {
 });
 
 router.post('/owner', ownerController.createOwner);
+router.get('/check-token', passport.authenticate('jwt', { session: false }), ownerController.checkToken);
+
 router.get('/owner/:id', passport.authenticate('jwt', { session: false }), ownerController.getOwner);
 router.put('/owner/:id', passport.authenticate('jwt', { session: false }), ownerController.updateOwner);
 router.get('/owners', passport.authenticate('jwt', { session: false }), checkRole('owner'), ownerController.getOwners);

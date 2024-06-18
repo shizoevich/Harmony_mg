@@ -1,11 +1,19 @@
 const db = require('../db');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const keys = require('../config/keys');
 
 class ownerController {
     
   async createOwner(req, res) {
     try {
-      const { name_owner, mail_owner, password_owner, availability_iot, role } = req.body;
+      const { name_owner, mail_owner, password_owner, availability_iot } = req.body;
+      let { role } = req.body;
+
+      // Назначение роли "owner" по умолчанию
+      if (!role) {
+        role = 'owner';
+      }
   
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password_owner, salt);
@@ -15,15 +23,34 @@ class ownerController {
         [name_owner, mail_owner, hashedPassword, availability_iot, role]
       );
   
-      // Send a response indicating successful owner creation
-      res.status(201).json(newOwner.rows[0]);
+      // Создание JWT токена
+      const payload = {
+        id_owner: newOwner.rows[0].id_owner,
+        name_owner: newOwner.rows[0].name_owner,
+        role: newOwner.rows[0].role
+      };
+
+      jwt.sign(
+        payload,
+        keys.secretOrKey,
+        { expiresIn: 3600 },
+        (err, token) => {
+          res.json({
+            success: true,
+            token: 'Bearer ' + token,
+            role: newOwner.rows[0].role,
+            id_owner: newOwner.rows[0].id_owner
+          });
+        }
+      );
+  
     } catch (error) {
-      // Log the error and send an error response
       console.error('Error creating owner:', error);
       res.status(500).json({ error: 'An error occurred while creating the owner.' });
     }
   }
-  
+
+  // Остальные методы остаются без изменений...
 
   async getOwner(req, res) {
     const id = req.params.id;
@@ -121,3 +148,14 @@ class ownerController {
 }
 
 module.exports = new ownerController();
+
+exports.checkToken = (req, res) => {
+  const token = req.headers.authorization.split(' ')[1];
+  jwt.verify(token, keys.secretOrKey, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: 'Token is not valid' });
+    } else {
+      return res.json({ role: decoded.role, id_owner: decoded.id_owner });
+    }
+  });
+};
