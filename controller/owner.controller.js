@@ -114,10 +114,20 @@ class ownerController {
     res.json(updatedOwner.rows[0]);
   }
 
-  async getOwners(req, res) {
-    const owners = await db.query('SELECT * FROM owner');
-    res.json(owners.rows);
-  }
+  async getOwner(req, res) {
+    const id = req.params.id;
+    try {
+        const owner = await db.query('SELECT * FROM owner WHERE id_owner = $1', [id]);
+        if (!owner.rows.length) {
+            return res.status(404).json({ message: 'Owner not found' });
+        }
+        res.json(owner.rows[0]);
+    } catch (error) {
+        console.error('Error fetching owner:', error);
+        res.status(500).json({ error: 'An error occurred while fetching the owner.' });
+    }
+}
+
 
   async getOwnerSensorData(req, res) {
     const ownerId = req.params.id;
