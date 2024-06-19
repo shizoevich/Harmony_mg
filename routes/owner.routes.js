@@ -16,6 +16,7 @@ router.get('/owner/:id/sensor-data', passport.authenticate('jwt', { session: fal
 router.get('/owner/:id/iot', passport.authenticate('jwt', { session: false }), ownerController.getOwnerIot);
 router.post('/owner/:id/suitable-workers', passport.authenticate('jwt', { session: false }), ownerController.getSuitableWorkers);
 router.get('/owner/:id/workers-status', passport.authenticate('jwt', { session: false }), ownerController.getWorkersStatus);
+router.post('/workers', passport.authenticate('jwt', { session: false }), ownerController.createWorker);
 
 module.exports = router;
 

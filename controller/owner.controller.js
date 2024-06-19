@@ -145,6 +145,25 @@ class ownerController {
     res.sendStatus(204);
   }
 
+  async createWorker(req, res) {
+    try {
+      const { name_worker, mail_worker, password_worker, id_owner } = req.body;
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password_worker, salt);
+
+      const newWorker = await db.query(
+        'INSERT INTO worker (name_worker, mail_worker, password_worker, id_owner) VALUES ($1, $2, $3, $4) RETURNING *',
+        [name_worker, mail_worker, hashedPassword, id_owner]
+      );
+
+      res.json(newWorker.rows[0]);
+    } catch (error) {
+      console.error('Error creating worker:', error);
+      res.status(500).json({ error: 'An error occurred while creating the worker.' });
+    }
+  }
+
   async getOwnerWorkers(req, res) {
     const ownerId = req.params.id;
     try {
